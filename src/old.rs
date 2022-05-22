@@ -29,6 +29,7 @@ fn client_handler(mut stream: TcpStream) -> io::Result<()>{
     //MSG.push(sent);
     //println!("MSG vector: {:?}", MSG);
     let mut message = String::from("HOWDY\n");
+    let mut abort: u8 = 245;
     for _ in 0..1000 {
         // Getting message from sender
         let bytes_read = stream.read(&mut buf)?;
@@ -41,8 +42,8 @@ fn client_handler(mut stream: TcpStream) -> io::Result<()>{
             return Ok(());
         }
         println!("Bytes read: {:?}",bytes_read);
-        
-        stream.write(&message.as_bytes()[..message.len()])?;
+        let buffer: [u8; 3] = [255, 253, 1];
+        stream.write_all(&buffer)?;
         println!("from the sender:{}",String::from_utf8_lossy(&buf));
         //thread::sleep(time::Duration::from_secs(1));
     }
